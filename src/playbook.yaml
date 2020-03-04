@@ -2,10 +2,10 @@
   become: yes
 
   tasks:
-    - name: Get base playbook
-      get_url: url=https://raw.githubusercontent.com/Sage-Bionetworks/packer-base-ubuntu-bionic/v1.0.0/src/playbook.yaml dest={{ playbook_dir }}/sagebio-base-ubuntu-bionic-v1.0.0.yaml
+    # - name: Get base playbook
+    #   get_url: url=https://raw.githubusercontent.com/Sage-Bionetworks/packer-base-ubuntu-bionic/v1.0.0/src/playbook.yaml dest={{ playbook_dir }}/sagebio-base-ubuntu-bionic-v1.0.0.yaml
 
-    - include_tasks: sagebio-base-ubuntu-bionic-v1.0.0.yaml
+    # - include_tasks: sagebio-base-ubuntu-bionic-v1.0.0.yaml
 
     - name: Add the CRAN apt key
       apt_key:
