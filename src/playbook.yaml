@@ -2,8 +2,10 @@
   become: yes
 
   tasks:
-    - name: install system updates for ubuntu systems
-      apt: upgrade=dist update_cache=yes
+    - name: Get base playbook
+      get_url: url=https://github.com/Sage-Bionetworks/ami-provisioner/blob/master/packer/sagebio/sagebio-base-ubuntu-bionic-LATEST/playbook.yaml dest={{ playbook_dir }}/sagebio-base-ubuntu-bionic-LATEST.yaml
+
+    - include_tasks: sagebio-base-ubuntu-bionic-LATEST.yaml
 
     - name: Add the CRAN apt key
       apt_key:
@@ -18,8 +20,6 @@
     - name: install packages
       package:
         name:
-          - "ntpdate"
-          - "curl"
           - "zlib1g-dev"
           - "libclang-dev"
           - "libssl-dev"
@@ -58,23 +58,3 @@
 
    # - pip:
    #     name: synapseclient
-
-    - name: Install amazon-ssm-agent
-      snap:
-        name:
-          - amazon-ssm-agent
-        classic: yes
-
-    - name: Check if JumpCloud is already installed
-      shell: "[ -d /opt/jc ] && echo 'Found' || echo ''"
-      register: jc_installed
-
-    - name: Update time
-      shell: "ntpdate -u pool.ntp.org"
-      when: "not jc_installed.stdout"
-
-    - name: Install JumpCloud
-      shell: "curl --header 'x-connect-key: {{ lookup('env','JcConnectKey') }}' https://kickstart.jumpcloud.com/Kickstart | sudo bash"
-      args:
-        warn: False
-      when: "not jc_installed.stdout"
