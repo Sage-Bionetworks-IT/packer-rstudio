@@ -41,7 +41,7 @@
     {
       "ansible_env_vars": [
         "ANSIBLE_SSH_ARGS='-o IdentitiesOnly=yes'",
-        "ImageName={{user `ImageName`}}"
+        "JcConnectKey={{user `JcConnectKey`}}"
       ],
       "playbook_file": "playbook.yaml",
       "type": "ansible"
@@ -50,13 +50,13 @@
   "variables": {
     "AmiUsers": "563295687221,055273631518,804034162148,237179673806",
     "Department": "Platform",
-    "ImageName": "{{env `ImageName`}}",
-    "InstanceType": "t3.nano",
-    "OwnerEmail": "khai.do@sagebase.org",
+    "ImageName": "sagebio-rstudio-LATEST",
+    "InstanceType": "t3.small",
+    "OwnerEmail": "thomas.yu@sagebase.org",
     "Project": "Infrastructure",
     "SnapshotUsers": "563295687221,055273631518,804034162148,237179673806",
     "SourceImage": "ami-07ebfd5b3428b6f4d",
     "SshUsername": "ubuntu",
-    "VolumeSize": "8"
+    "VolumeSize": "16"
   }
 }
