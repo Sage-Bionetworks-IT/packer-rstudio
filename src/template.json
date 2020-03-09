@@ -39,22 +39,11 @@
   ],
   "provisioners": [
     {
-      "script": "shutdown-apt-services.sh",
-      "type": "shell"
-    },
-    {
       "ansible_env_vars": [
         "ANSIBLE_SSH_ARGS='-o IdentitiesOnly=yes'"
       ],
       "playbook_file": "playbook.yaml",
       "type": "ansible"
-    },
-    {
-      "inline": [
-        "sudo systemctl enable apt-daily.timer",
-        "sudo systemctl enable apt-daily-upgrade.timer"
-      ],
-      "type": "shell"
     }
   ],
   "variables": {
