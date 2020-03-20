@@ -31,7 +31,6 @@
           - "libssl1.0.0"
           - "r-base"
           - "r-base-dev"
-          - "python3-pip"
           - "libxml2-dev"
         state: present
 
