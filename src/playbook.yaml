@@ -6,6 +6,8 @@
     #   get_url: url=https://raw.githubusercontent.com/Sage-Bionetworks/packer-base-ubuntu-bionic/v1.0.0/src/playbook.yaml dest={{ playbook_dir }}/sagebio-base-ubuntu-bionic-v1.0.0.yaml
 
     # - include_tasks: sagebio-base-ubuntu-bionic-v1.0.0.yaml
+    - pause:
+        seconds: 30
 
     - name: Add the CRAN apt key
       apt_key:
