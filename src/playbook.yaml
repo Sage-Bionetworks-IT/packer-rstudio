@@ -40,6 +40,21 @@
     - name: Install RStudio Server
       command: dpkg -i /tmp/rstudio.deb
 
+   - name: Generate a self-signed cert
+     openssl_certificate:
+       path: /etc/rstudio/packer-rstudio.cert
+       privatekey_path: /etc/rstudio/packer-rstudio.key
+       csr_path: /etc/rstudio/packer-rstudio.csr
+       provider: selfsigned
+
+  - name: Overwrite rstudio web config
+    copy:
+      dest: /etc/rstudio/rserver.conf
+      content: |
+        ssl-enabled=1
+        ssl-certificate=/etc/rstudio/packer-rstudio.cert
+        ssl-certificate-key=/etc/rstudio/packer-rstudio.key
+
     # Install essential R packages
     - name: Install synapser
       shell: "R -e \"install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))\""
