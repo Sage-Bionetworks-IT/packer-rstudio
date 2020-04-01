@@ -43,7 +43,6 @@
     - name: Generate a priv key
       openssl_privatekey:
         path: /etc/rstudio/packer-rstudio.pem
-        cipher: aes256
 
     - name: Generate CSR
       openssl_csr:
