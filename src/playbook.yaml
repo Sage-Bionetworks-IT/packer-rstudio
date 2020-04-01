@@ -40,10 +40,21 @@
     - name: Install RStudio Server
       command: dpkg -i /tmp/rstudio.deb
 
+    - name: Generate a priv key
+      openssl_privatekey:
+        path: /etc/rstudio/packer-rstudio.pem
+        cipher: aes256
+
+    - name: Generate CSR
+      openssl_csr:
+        path: /etc/rstudio/packer-rstudio.csr
+        privatekey_path: /etc/rstudio/packer-rstudio.pem
+        common_name: packer-rstudio.scipoolprod.org #This DNS name does not exist
+
     - name: Generate a self-signed cert
       openssl_certificate:
         path: /etc/rstudio/packer-rstudio.cert
-        privatekey_path: /etc/rstudio/packer-rstudio.key
+        privatekey_path: /etc/rstudio/packer-rstudio.pem
         csr_path: /etc/rstudio/packer-rstudio.csr
         provider: selfsigned
 
@@ -53,7 +64,7 @@
         content: |
           ssl-enabled=1
           ssl-certificate=/etc/rstudio/packer-rstudio.cert
-          ssl-certificate-key=/etc/rstudio/packer-rstudio.key
+          ssl-certificate-key=/etc/rstudio/packer-rstudio.pem
 
     # Install essential R packages
     - name: Install synapser
