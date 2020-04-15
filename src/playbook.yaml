@@ -32,7 +32,6 @@
           - "r-base"
           - "r-base-dev"
           - "libxml2-dev"
-          - "nginx"
         state: present
 
     - name: Download RStudio Server
