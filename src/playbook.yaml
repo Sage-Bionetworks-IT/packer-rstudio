@@ -32,6 +32,7 @@
           - "r-base"
           - "r-base-dev"
           - "libxml2-dev"
+          - "nginx"
         state: present
 
     - name: Download RStudio Server
@@ -47,6 +48,85 @@
           www-address=127.0.0.1  #Only serve on internal interface
           www-port=8787
 
+    #Create nginx proxy
+    - name: Create folder for ssl certs
+      command: mkdir -p /etc/nginx/ssl
+
+    - name: Generate a priv key
+      openssl_privatekey:
+        path: /etc/nginx/ssl/rstudio.pem
+
+    - name: Generate CSR
+      openssl_csr:
+        path: /etc/nginx/ssl/rstudio.csr
+        privatekey_path: /etc/nginx/ssl/rstudio.pem
+        common_name: rstudio.scipoolprod.org #This DNS name does not exist
+                                                                    
+    - name: Generate a self-signed cert
+      openssl_certificate:
+        path: /etc/nginx/ssl/rstudio.cert
+        privatekey_path: /etc/nginx/ssl/rstudio.pem
+        csr_path: /etc/nginx/ssl/rstudio.csr
+        provider: selfsigned
+
+    - name: Add config for local fwd proxy to rstudio
+      copy:
+        dest: /etc/nginx/conf.d/rstudio.conf
+        content: |
+          server {
+            listen 443 ssl;
+            ssl_certificate /etc/nginx/ssl/rstudio.cert;
+            ssl_certificate_key /etc/nginx/ssl/rstudio.pem;
+            location / {
+              proxy_pass http://localhost:8787/;
+              proxy_redirect http://localhost:8787/ $scheme://$host/;
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection $connection_upgrade;
+              proxy_read_timeout 20d;
+            }
+          }
+
+    - name: Add config for local fwd proxy to rstudio
+      copy:
+        dest: /etc/nginx/nginx.conf
+        content: |
+          user nginx;
+          worker_processes auto;
+          error_log /var/log/nginx/error.log;
+          pid /var/run/nginx.pid;
+
+          include /usr/share/nginx/modules/*.conf
+
+          events {
+            worker_connections 1024;
+          }
+
+          http {
+            log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                              '$status $body_bytes_sent "$http_referer" '
+                              '"$http_user_agent" "$http_x_forwarded_for"';
+
+            access_log  /var/log/nginx/access.log  main;
+
+            sendfile            on;
+            tcp_nopush          on;
+            tcp_nodelay         on;
+            keepalive_timeout   65;
+            types_hash_max_size 2048;
+            include             /etc/nginx/mime.types;
+            default_type        application/octet-stream;
+
+            include /etc/nginx/conf.d/rstudio.conf;
+            index   index.html index.htm;
+            server_names_hash_bucket_size 128;
+
+            map $http_upgrade $connection_upgrade {
+            default upgrade;
+            ''      close;
+            }
+          }
+    
     # Install essential R packages
     - name: Install synapser
       shell: "R -e \"install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))\""
