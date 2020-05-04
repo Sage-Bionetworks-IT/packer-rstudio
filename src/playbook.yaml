@@ -90,7 +90,7 @@
             }
           }
 
-    - name: Add config for local fwd proxy to rstudio
+    - name: Add general nginx config
       copy:
         dest: /etc/nginx/nginx.conf
         content: |
