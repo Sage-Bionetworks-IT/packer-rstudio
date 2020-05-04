@@ -7,7 +7,7 @@
 
     # - include_tasks: sagebio-base-ubuntu-bionic-v1.0.0.yaml
     - pause:
-        seconds: 30
+        seconds: 90 #time needed for aptitude to give up lock after boot
 
     - name: Add the CRAN apt key
       apt_key:
@@ -50,7 +50,10 @@
 
     #Create nginx proxy
     - name: Create folder for ssl certs
-      command: mkdir -p /etc/nginx/ssl
+      file: 
+        path: /etc/nginx/ssl
+        state: directory
+        mode: 0700
 
     - name: Generate a priv key
       openssl_privatekey:
