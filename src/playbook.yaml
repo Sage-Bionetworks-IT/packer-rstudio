@@ -61,7 +61,7 @@
         path: /etc/nginx/ssl/rstudio.csr
         privatekey_path: /etc/nginx/ssl/rstudio.pem
         common_name: rstudio.scipoolprod.org #This DNS name does not exist
-                                                                    
+
     - name: Generate a self-signed cert
       openssl_certificate:
         path: /etc/nginx/ssl/rstudio.cert
@@ -126,7 +126,7 @@
             ''      close;
             }
           }
-    
+
     # Install essential R packages
     - name: Install synapser
       shell: "R -e \"install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))\""
