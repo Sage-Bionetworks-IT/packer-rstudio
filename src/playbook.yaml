@@ -2,12 +2,9 @@
   become: yes
 
   tasks:
-    # - name: Get base playbook
-    #   get_url: url=https://raw.githubusercontent.com/Sage-Bionetworks/packer-base-ubuntu-bionic/v1.0.0/src/playbook.yaml dest={{ playbook_dir }}/sagebio-base-ubuntu-bionic-v1.0.0.yaml
-
-    # - include_tasks: sagebio-base-ubuntu-bionic-v1.0.0.yaml
-    - pause:
-        seconds: 90 #time needed for aptitude to give up lock after boot
+    - name: Wait for automatic Ubuntu updates
+      become: yes
+      shell: while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done;
 
     - name: Add the CRAN apt key
       apt_key:
@@ -72,16 +69,16 @@
         csr_path: /etc/nginx/ssl/rstudio.csr
         provider: selfsigned
 
-    - name: Add config for local fwd proxy to rstudio
+    - name: Add config for local rev proxy to rstudio
       copy:
         dest: /etc/nginx/nginx.conf
         content: |
-          user www-data;  #default web server user on Ubuntu
+          user www-data;  #default web server user on Ubuntu (should be nginx for rpm installs)
           worker_processes auto;
           error_log /var/log/nginx/error.log;
           pid /var/run/nginx.pid;
 
-          include /usr/share/nginx/modules/*.conf
+          include /usr/share/nginx/modules/*.conf;
 
           events {
             worker_connections 1024;
