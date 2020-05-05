@@ -74,27 +74,9 @@
 
     - name: Add config for local fwd proxy to rstudio
       copy:
-        dest: /etc/nginx/conf.d/rstudio.conf
-        content: |
-          server {
-            listen 443 ssl;
-            ssl_certificate /etc/nginx/ssl/rstudio.cert;
-            ssl_certificate_key /etc/nginx/ssl/rstudio.pem;
-            location / {
-              proxy_pass http://localhost:8787/;
-              proxy_redirect http://localhost:8787/ $scheme://$host/;
-              proxy_http_version 1.1;
-              proxy_set_header Upgrade $http_upgrade;
-              proxy_set_header Connection $connection_upgrade;
-              proxy_read_timeout 20d;
-            }
-          }
-
-    - name: Add general nginx config
-      copy:
         dest: /etc/nginx/nginx.conf
         content: |
-          user nginx;
+          user www-data;  #default web server user on Ubuntu
           worker_processes auto;
           error_log /var/log/nginx/error.log;
           pid /var/run/nginx.pid;
@@ -120,7 +102,25 @@
             include             /etc/nginx/mime.types;
             default_type        application/octet-stream;
 
-            include /etc/nginx/conf.d/rstudio.conf;
+            server {
+              listen 443 ssl;
+              ssl_certificate /etc/nginx/ssl/rstudio.cert;
+              ssl_certificate_key /etc/nginx/ssl/rstudio.pem;
+
+              location / {
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_pass http://localhost:8787/;
+                proxy_redirect http://localhost:8787/ $scheme://$host/;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+                proxy_read_timeout 7d;
+              }
+            }
+
             index   index.html index.htm;
             server_names_hash_bucket_size 128;
 
