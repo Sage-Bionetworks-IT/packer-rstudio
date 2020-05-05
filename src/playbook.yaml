@@ -47,7 +47,7 @@
 
     #Create nginx proxy
     - name: Create folder for ssl certs
-      file: 
+      file:
         path: /etc/nginx/ssl
         state: directory
         mode: 0700
