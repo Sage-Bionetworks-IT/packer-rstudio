@@ -2,8 +2,9 @@
   become: yes
 
   tasks:
-    - pause:
-        seconds: 60
+    - name: Wait for automatic Ubuntu updates
+      become: yes
+      shell: while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do sleep 1; done;
 
     - name: Add the CRAN apt key
       apt_key:
