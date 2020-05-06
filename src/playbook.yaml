@@ -4,7 +4,7 @@
   tasks:
     - name: Wait for automatic Ubuntu updates
       become: yes
-      shell: while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done;
+      shell: while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done;
 
     - name: Add the CRAN apt key
       apt_key:
