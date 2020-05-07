@@ -13,16 +13,16 @@
         repo: deb https://cloud.r-project.org/bin/linux/ubuntu {{ ansible_distribution_release }}-cran35/
 
     - name: Update apt Cache
-      apt: 
+      apt:
         update_cache: yes
         force_apt_get: yes
-        
+
     - name: Wait for APT Lock
       shell:  while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done;
 
     - name: Install Apt Packages
       apt:
-        name: 
+        name:
           - "zlib1g-dev"
           - "libclang-dev"
           - "libssl-dev"
