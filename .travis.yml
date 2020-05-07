@@ -17,7 +17,7 @@ before_script:
 stages:
   - name: validate
   - name: deploy-branch
-    if: type = push AND branch = master
+    if: type = push AND branch = inc-pause
   - name: deploy-tag
     if: tag =~ ^v
 jobs:
