@@ -18,7 +18,7 @@
         force_apt_get: yes
 
     - name: Wait for APT Lock
-      shell:  while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done;
+      shell:  while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do sleep 5; done;
 
     - name: Install Apt Packages
       apt:
