@@ -2,6 +2,8 @@
   become: yes
 
   tasks:
+    - pause:
+        seconds: 90
 
     - name: Add the CRAN apt key
       apt_key:
@@ -11,14 +13,7 @@
     - name: Add R-Project apt repository
       apt_repository:
         repo: deb https://cloud.r-project.org/bin/linux/ubuntu {{ ansible_distribution_release }}-cran35/
-
-    - name: Update apt Cache
-      apt:
         update_cache: yes
-        force_apt_get: yes
-
-    - name: Wait for APT Lock
-      shell:  while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do sleep 5; done;
 
     - name: Install Apt Packages
       apt:
@@ -35,7 +30,6 @@
           - "libxml2-dev"
           - "nginx"
         state: present
-        force_apt_get: yes
 
     - name: Download RStudio Server
       get_url: url=https://download2.rstudio.org/server/bionic/amd64/rstudio-server-1.2.5033-amd64.deb dest=/tmp/rstudio.deb
