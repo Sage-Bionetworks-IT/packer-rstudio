@@ -13,9 +13,7 @@
         id: E298A3A825C0D65DFD57CBB651716619E084DAB9
 
     - name: Add R-Project apt repository
-      apt_repository:
-        repo: deb https://cloud.r-project.org/bin/linux/ubuntu {{ ansible_distribution_release }}-cran35/
-        update_cache: yes
+      shell: "aptdcon --add-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu {{ ansible_distribution_release }}-cran35/' && aptdcon --refresh"
 
     - name: install packages
       shell: "yes | aptdcon --hide-terminal --install 'zlib1g-dev libclang-dev libssl-dev libffi-dev libcurl4-openssl-dev libapparmor1 libssl1.0.0 r-base r-base-dev libxml2-dev'"
