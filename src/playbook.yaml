@@ -18,7 +18,7 @@
         update_cache: yes
 
     - name: install packages
-      shell: "yes | aptdcon --hide-terminal --install 'zlib1g-dev libclang-dev libssl-dev libffi-dev libcurl4-openssl-dev libapparmor1 libssl1.0.0 r-base r-base-dev libxml2-dev'"
+      shell: "yes | aptdcon --hide-terminal --install 'zlib1g-dev libclang-dev libssl-dev libffi-dev libcurl4-openssl-dev libapparmor1 libssl1.0.0 r-base r-base-dev libxml2-dev nginx'"
 
     - name: Download RStudio Server
       get_url: url=https://download2.rstudio.org/server/bionic/amd64/rstudio-server-1.2.5033-amd64.deb dest=/tmp/rstudio.deb
