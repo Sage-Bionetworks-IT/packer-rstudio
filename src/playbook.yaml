@@ -16,13 +16,25 @@
       shell: "aptdcon --add-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu {{ ansible_distribution_release }}-cran35/' && aptdcon --refresh"
 
     - name: install packages
-      shell: "yes | aptdcon --hide-terminal --install 'zlib1g-dev libclang-dev libssl-dev libffi-dev libcurl4-openssl-dev libapparmor1 libssl1.0.0 r-base r-base-dev libxml2-dev apache2'"
+      shell: "yes | aptdcon --hide-terminal --install 'zlib1g-dev libclang-dev libssl-dev libffi-dev libcurl4-openssl-dev libapparmor1 libssl1.0.0 r-base r-base-dev libxml2-dev apache2 libmemcached11 libjansson4 libcjose0 libhiredis0.13 ssl-cert'"
 
-    - name: Download OAUTH2 module 
+    - name: Download OAUTH2 library 
       get_url: url=https://github.com/zmartzone/liboauth2/releases/download/v1.3.0/liboauth2_1.3.0-1.bionic+1_amd64.deb dest=/tmp/liboauth2.deb
 
-    - name: Install OAUTH2 module Server
+    - name: Install OAUTH2 library 
       command: dpkg -i /tmp/liboauth2.deb
+
+    - name: Download OAUTH2 apache2 binding 
+      get_url: url=https://github.com/zmartzone/liboauth2/releases/download/v1.3.0/liboauth2-apache_1.3.0-1.bionic+1_amd64.deb dest=/tmp/liboauth2-apache.deb
+
+    - name: Install OAUTH2 apache2 binding 
+      command: dpkg -i /tmp/liboauth2-apache.deb
+
+    - name: Download OAUTH2 apache2 module 
+      get_url: url=https://github.com/zmartzone/mod_oauth2/releases/download/v3.1.0/libapache2-mod-oauth2_3.1.0-1.bionic+1_amd64.deb dest=/tmp/liboauth2-apache-module.deb
+
+    - name: Install OAUTH2 apache2 module 
+      command: dpkg -i /tmp/liboauth2-apache-module.deb
 
     - name: Download RStudio Server
       get_url: url=https://download2.rstudio.org/server/bionic/amd64/rstudio-server-1.2.5033-amd64.deb dest=/tmp/rstudio.deb
@@ -38,51 +50,26 @@
           www-port=8787
           #TODO need to disable local auth
 
-    #Define apache2 proxy
-    - name: Create folder for ssl certs
-      file:
-        path: /etc/apache2/ssl
-        state: directory
-        mode: 0700
-
-    - name: Generate a priv key
-      openssl_privatekey:
-        path: /etc/apache2/ssl/proxy.key
-
-    - name: Generate CSR
-      openssl_csr:
-        path: /etc/apache2/ssl/rstudio.csr
-        privatekey_path: /etc/nginx/ssl/rstudio.pem
-        #common_name: rstudio.sageit.org #This DNS name does not exist
-
-    - name: Generate a self-signed cert
-      openssl_certificate:
-        path: /etc/apache/ssl/proxy.cert
-        privatekey_path: /etc/nginx/ssl/proxy.key
-        csr_path: /etc/nginx/ssl/proxy.csr
-        provider: selfsigned
-
     - name: Add config for local rev proxy to internal port
       copy:
         src: proxy.conf
+        dest: /etc/apache2/sites-available/proxy.conf
+
+    - name: Enable ssl proxy modules
+      command: a2enmod ssl proxy proxy_http oauth2
+
+    - name: Add normal symlink convention
+      file:
+        src: /etc/apache2/site-available/proxy.conf
         dest: /etc/apache2/sites-enabled/proxy.conf
+        state: link
+
+    - name: Remove default enabled site
+      file:
+        src: /etc/apache2/sites-enabled/000-default.conf
+        state: absent
 
     # Install essential R packages
     - name: Install synapser
       shell: "R -e \"install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))\""
 
-   #- name: Install tidyverse
-   #  shell: "R -e \"install.packages('tidyverse')\""
-
-   #- name: Install devtools
-   #  shell: "R -e \"install.packages('devtools')\""
-
-   #- name: Install BiocManager
-   #  shell: "R -e \"install.packages('BiocManager')\""
-
-   # reticulate has python path issues
-   # - name: Install reticulate
-   #   shell: "R -e \"install.packages('reticulate')\""
-
-   # - pip:
-   #     name: synapseclient
