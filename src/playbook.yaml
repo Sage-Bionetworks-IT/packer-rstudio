@@ -48,8 +48,11 @@
     - name: Enable modules
       command: a2enmod ssl proxy proxy_http rewrite python headers
 
-    - name: Enable proxy site and disable default
-      command: a2enssite proxy && a2dissite 000-default
+    - name: Enable proxy site 
+      command: a2ensite proxy 
+
+    - name: Disable default
+      command: a2dissite 000-default
 
     # Install essential R packages
     - name: Install synapser
