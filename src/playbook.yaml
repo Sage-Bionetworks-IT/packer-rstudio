@@ -24,7 +24,6 @@
     - name: Install RStudio Server
       command: dpkg -i /tmp/rstudio.deb
 
-      #TODO also need to overwrite systemd service definition
     - name: Overwrite rstudio web config
       copy:
         dest: /etc/rstudio/rserver.conf
@@ -58,3 +57,11 @@
     - name: Install synapser
       shell: "R -e \"install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))\""
 
+    - name: Install tidyverse
+      shell: "R -e \"install.packages('tidyverse')\""
+
+    - name: Install devtools
+      shell: "R -e \"install.packages('devtools')\""
+
+    - name: Install BiocManager
+      shell: "R -e \"install.packages('BiocManager')\""
