@@ -31,6 +31,11 @@
           www-address=127.0.0.1  #Only serve on internal interface
           www-port=8787
 
+    - name: Replace rstudio-server service with no auth 
+      copy:
+        src: rstudio-server.service
+        dest: /etc/systemd/system/
+
     - name: Add JWT and instance tag verifing script
       copy:
         src: access.py
