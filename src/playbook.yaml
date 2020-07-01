@@ -31,7 +31,7 @@
           www-address=127.0.0.1  #Only serve on internal interface
           www-port=8787
 
-    - name: Replace rstudio-server service with no auth 
+    - name: Replace rstudio-server service with no auth
       copy:
         src: rstudio-server.service
         dest: /etc/systemd/system/
@@ -52,8 +52,8 @@
     - name: Enable modules
       command: a2enmod ssl proxy proxy_http rewrite python headers
 
-    - name: Enable proxy site 
-      command: a2ensite proxy 
+    - name: Enable proxy site
+      command: a2ensite proxy
 
     - name: Disable default
       command: a2dissite 000-default
