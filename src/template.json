@@ -51,7 +51,7 @@
     "Department": "Platform",
     "ImageName": "{{env `ImageName`}}",
     "InstanceType": "t3.small",
-    "OwnerEmail": "thomas.yu@sagebase.org",
+    "OwnerEmail": "it@sagebase.org",
     "Project": "Infrastructure",
     "SnapshotGroups": "all",
     "SourceImage": "ami-0b7906ab614596e7e",
