@@ -45,7 +45,8 @@ def approved_user():
 def store_to_ssm(access_token):
   parameter_name = os.environ.get(ssm_parameter_name_env_var)
   if not (parameter_name):
-    raise ValueError('Environment variable: "' + ssm_parameter_name_env_var + '" was not found.')
+    # just exit early if the parameter name to store in SSM is not found
+    return
 
   ssm_client = boto3.client('ssm', region)
 
