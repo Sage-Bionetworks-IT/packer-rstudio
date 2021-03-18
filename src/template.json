@@ -43,6 +43,9 @@
         "ANSIBLE_SSH_ARGS='-o IdentitiesOnly=yes'"
       ],
       "playbook_file": "playbook.yaml",
+      "extra_arguments": [
+        "-vvv"
+      ],
       "type": "ansible"
     }
   ],
