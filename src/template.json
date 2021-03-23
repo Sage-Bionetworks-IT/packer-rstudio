@@ -27,6 +27,7 @@
         "SourceAmiId": "{{ .SourceAMI }}",
         "SourceAmiName": "{{ .SourceAMIName }}"
       },
+      "encrypt_boot": "false",
       "type": "amazon-ebs"
     }
   ],
