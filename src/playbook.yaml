@@ -72,6 +72,14 @@
         owner: www-data
         group: www-data
         mode: 0755
+    
+    - name: Add per-instance config script to be run on each provisioned EC2 instance after this AMI is built
+      copy:
+        src: set-instance-id-config-files.sh
+        #  when copied to this path, `clould-init` will ensure that the script
+        #  will only run once on every EC2 instance that uses the AMI we are currently building
+        dest: /var/lib/cloud/scripts/per-instance/
+        mode: 0755
 
     - name: Add config for local rev proxy to internal port
       copy:
