@@ -10,7 +10,7 @@ set -e; set -u; set -o pipefail
 EC2_INSTANCE_ID=$(/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id)
 # the environment variable is used by the "synapser" R package to retrieve 
 # user Synapse authentication token from AWS Parameter Store
-SYNAPSE_ENV_VAR_STRING="SYNAPSE_TOKEN_AWS_SSM_PARAMETER_NAME=/synapse/cred/$EC2_INSTANCE_ID"
+SYNAPSE_ENV_VAR_STRING="SYNAPSE_TOKEN_AWS_SSM_PARAMETER_NAME=/service-catalog/synapse/cred/$EC2_INSTANCE_ID/odic-accesstoken"
 
 
 # modify apache proxy config
