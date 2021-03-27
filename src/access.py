@@ -42,7 +42,12 @@ def approved_user():
 
   return approved_caller.split(':')[1] #return userid portion of tag
 
-def store_to_ssm(access_token):
+# taking advantage of lru cache to avoid re-putting the same access token to 
+# SSM Parameter Store. 
+# According to functools source code, arguments (i.e. the access token) are hashed,
+# not stored as-is in memory 
+@functools.lru_cache(maxsize=1)
+def store_to_ssm(access_token):  
   parameter_name = os.environ.get(ssm_parameter_name_env_var)
   if not (parameter_name):
     # just exit early if the parameter name to store in SSM is not found
