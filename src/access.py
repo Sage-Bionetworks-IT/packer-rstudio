@@ -11,7 +11,7 @@ import os
 
 from mod_python import apache
 
-region = 'us-east-1'
+region = json.loads(requests.get('http://169.254.169.254/latest/dynamic/instance-identity/document').text)['region']
 ssm_parameter_name_env_var = 'SYNAPSE_TOKEN_AWS_SSM_PARAMETER_NAME'
 
 def headerparserhandler(req):
@@ -83,5 +83,5 @@ def jwt_payload(encoded_jwt):
 
 @functools.lru_cache()
 def get_aws_elb_public_key(region, key_id):
-  url = 'https://public-keys.auth.elb.' + region + '.amazonaws.com/' + key_id
+  url = f'https://public-keys.auth.elb.{region}.amazonaws.com/{key_id}'
   return requests.get(url).text

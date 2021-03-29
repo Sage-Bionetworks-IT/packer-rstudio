@@ -7,6 +7,7 @@
 # In case I am bad at programming
 set -e; set -u; set -o pipefail
 
+AWS_REGION=$(/usr/bin/curl -s http://169.254.169.254/latest/dynamic/instance-identity/document)
 EC2_INSTANCE_ID=$(/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id)
 # the environment variable is used by the "synapser" R package to retrieve 
 # user Synapse authentication token from AWS Parameter Store
@@ -20,6 +21,7 @@ echo "export $SYNAPSE_ENV_VAR_STRING" >> /etc/apache2/envvars
 
 # set environment variable for R
 echo $SYNAPSE_ENV_VAR_STRING >> /etc/R/Renviron.site
+echo "AWS_DEFAULT_REGION=$AWS_REGION" >> /etc/R/Renviron.site
 
 systemctl restart apache2 
 # there does not appear to be a need to restart RStudio server
