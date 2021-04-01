@@ -13,6 +13,7 @@ from mod_python import apache
 
 region = json.loads(requests.get('http://169.254.169.254/latest/dynamic/instance-identity/document').text)['region']
 ssm_parameter_name_env_var = 'SYNAPSE_TOKEN_AWS_SSM_PARAMETER_NAME'
+kms_alias_env_var = 'KMS_KEY_ALIAS'
 
 def headerparserhandler(req):
   jwt_str = req.headers_in['x-amzn-oidc-data'] #proxy.conf ensures this header exists
@@ -49,16 +50,20 @@ def approved_user():
 @functools.lru_cache(maxsize=1)
 def store_to_ssm(access_token):  
   parameter_name = os.environ.get(ssm_parameter_name_env_var)
+  kms_key_alias = os.environ.get(kms_alias_env_var)
   if not (parameter_name):
     # just exit early if the parameter name to store in SSM is not found
     return
 
   ssm_client = boto3.client('ssm', region)
+  kms_client = boto3.client('kms', region)
+  key_id = kms_client.describe_key(KeyId=kms_key_alias)['KeyMetadata']['KeyId']
 
   ssm_client.put_parameter(
     Name=parameter_name,
     Type='SecureString',
     Value=access_token,
+    KeyId=key_id,
     Overwrite=True
   )
 

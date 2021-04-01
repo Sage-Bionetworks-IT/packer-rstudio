@@ -11,13 +11,16 @@ AWS_REGION=$(/usr/bin/curl -s http://169.254.169.254/latest/dynamic/instance-ide
 EC2_INSTANCE_ID=$(/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id)
 # the environment variable is used by the "synapser" R package to retrieve 
 # user Synapse authentication token from AWS Parameter Store
-SYNAPSE_ENV_VAR_STRING="SYNAPSE_TOKEN_AWS_SSM_PARAMETER_NAME=/service-catalog/synapse/cred/$EC2_INSTANCE_ID/odic-accesstoken"
 
+SERVICE_CATALOG_PREFIX='service-catalog/synapse/cred'
+SYNAPSE_ENV_VAR_STRING="SYNAPSE_TOKEN_AWS_SSM_PARAMETER_NAME=/$SERVICE_CATALOG_PREFIX/$EC2_INSTANCE_ID/odic-accesstoken"
+KMS_KEY_ALIAS_ENV_VAR_STRING="KMS_KEY_ALIAS=alias/$SERVICE_CATALOG_PREFIX/$EC2_INSTANCE_ID"
 
 # modify apache proxy config
 sed -i "s/^.*<LocationMatch.*\/.*\/>.*$/<LocationMatch \/$EC2_INSTANCE_ID\/>/g" /etc/apache2/sites-available/proxy.conf
 # set envirronment variable for Apache 
 echo "export $SYNAPSE_ENV_VAR_STRING" >> /etc/apache2/envvars
+echo "export $KMS_KEY_ALIAS_ENV_VAR_STRING" >> /etc/apache2/envvars
 
 # set environment variable for R
 echo $SYNAPSE_ENV_VAR_STRING >> /etc/R/Renviron.site
