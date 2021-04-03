@@ -3,6 +3,7 @@
     {
       "ami_groups": "{{user `AmiGroups`}}",
       "ami_name": "{{user `ImageName`}}",
+      "encrypt_boot": "false",
       "force_delete_snapshot": "true",
       "instance_type": "{{user `InstanceType`}}",
       "launch_block_device_mappings": [
@@ -27,7 +28,6 @@
         "SourceAmiId": "{{ .SourceAMI }}",
         "SourceAmiName": "{{ .SourceAMIName }}"
       },
-      "encrypt_boot": "false",
       "type": "amazon-ebs"
     }
   ],

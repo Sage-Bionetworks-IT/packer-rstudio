@@ -23,8 +23,8 @@
 
     - name: Install RStudio Server
       command: dpkg -i /tmp/rstudio.deb
-    
-    # Compile mod_python from source becuase we want to run mod_python in a Python 3 environment. 
+
+    # Compile mod_python from source becuase we want to run mod_python in a Python 3 environment.
     # We need mod_python >= 3.5
     # Unfortunately, the mod_python provided by apt in Ubuntu 18.04
     # is an older version (mod_pthon 3.3) that only supports Python 2
@@ -43,7 +43,7 @@
         # https://github.com/grisha/mod_python/pull/86
         cmd: |
           sed -i 's/print(distutils.sysconfig.get_config_var("LDLIBRARY"))/print(distutils.sysconfig.get_config_var("BLDLIBRARY"))/' ./configure
-          
+
           ./configure
 
           make install
@@ -72,7 +72,7 @@
         owner: www-data
         group: www-data
         mode: 0755
-    
+
     - name: Add per-instance config script to be run on each provisioned EC2 instance after this AMI is built
       copy:
         src: set-instance-id-config-files.sh

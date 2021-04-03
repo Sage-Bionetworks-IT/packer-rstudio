@@ -17,10 +17,10 @@ kms_alias_env_var = 'KMS_KEY_ALIAS'
 
 def headerparserhandler(req):
   jwt_str = req.headers_in['x-amzn-oidc-data'] #proxy.conf ensures this header exists
-  
+
   try:
     payload = jwt_payload(jwt_str)
-    
+
     if payload['userid'] == approved_user() and payload['exp'] > time.time():
       store_to_ssm(req.headers_in['x-amzn-oidc-accesstoken'])
       return apache.OK
@@ -43,12 +43,12 @@ def approved_user():
 
   return approved_caller.split(':')[1] #return userid portion of tag
 
-# taking advantage of lru cache to avoid re-putting the same access token to 
-# SSM Parameter Store. 
+# taking advantage of lru cache to avoid re-putting the same access token to
+# SSM Parameter Store.
 # According to functools source code, arguments (i.e. the access token) are hashed,
-# not stored as-is in memory 
+# not stored as-is in memory
 @functools.lru_cache(maxsize=1)
-def store_to_ssm(access_token):  
+def store_to_ssm(access_token):
   parameter_name = os.environ.get(ssm_parameter_name_env_var)
   kms_key_alias = os.environ.get(kms_alias_env_var)
   if not (parameter_name):
