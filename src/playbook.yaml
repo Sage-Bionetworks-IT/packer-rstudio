@@ -16,13 +16,37 @@
       shell: "aptdcon --add-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu {{ ansible_distribution_release }}-cran35/' && aptdcon --refresh"
 
     - name: install packages
-      shell: "yes | aptdcon --hide-terminal --install 'zlib1g-dev libclang-dev libssl-dev libffi-dev libcurl4-openssl-dev libapparmor1 libssl1.0.0 r-base r-base-dev libxml2-dev apache2 ssl-cert libapache2-mod-python python3-boto3'"
+      shell: "yes | aptdcon --hide-terminal --install 'zlib1g-dev libclang-dev libssl-dev libffi-dev libcurl4-openssl-dev libapparmor1 libssl1.0.0 r-base r-base-dev libxml2-dev apache2 apache2-dev ssl-cert flex python3-boto3'"
 
     - name: Download RStudio Server
       get_url: url=https://download2.rstudio.org/server/bionic/amd64/rstudio-server-1.2.5033-amd64.deb dest=/tmp/rstudio.deb
 
     - name: Install RStudio Server
       command: dpkg -i /tmp/rstudio.deb
+
+    # Compile mod_python from source becuase we want to run mod_python in a Python 3 environment.
+    # We need mod_python >= 3.5
+    # Unfortunately, the mod_python provided by apt in Ubuntu 18.04
+    # is an older version (mod_pthon 3.3) that only supports Python 2
+    # Compiling requires: 'flex' and 'apache2-dev' from installed from apt, which should have been installed in the previous steps
+    - name: Clone git repository for Apache Python Module - mod_python
+      ansible.builtin.git:
+        repo: 'https://github.com/grisha/mod_python.git'
+        # latest commit of the master branch that I've verified compilable as of the writing of this script
+        version: 83e9b96d72833d792795104362504e27c0fe0bf8
+        dest: /tmp/mod_python_source
+
+    - name: Compile and install mod_python
+      shell:
+        cmd: |
+          ./configure
+
+          make install
+
+          # add mod_python as an available module to enable later
+          echo 'LoadModule python_module /usr/lib/apache2/modules/mod_python.so' >> /etc/apache2/mods-available/python.load
+        chdir: /tmp/mod_python_source
+
 
     - name: Overwrite rstudio web config
       copy:
@@ -50,7 +74,7 @@
         dest: /etc/apache2/sites-available/proxy.conf
 
     - name: Enable modules
-      command: a2enmod ssl proxy proxy_http rewrite python headers
+      command: a2enmod ssl proxy proxy_http proxy_wstunnel rewrite python headers
 
     - name: Enable proxy site
       command: a2ensite proxy
@@ -60,7 +84,8 @@
 
     # Install essential R packages
     - name: Install synapser
-      shell: "R -e \"install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))\""
+      # environment variable needed to communicate with the embedded python and install boto3 dependency
+      shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))\""
 
     - name: Install tidyverse
       shell: "R -e \"install.packages('tidyverse')\""

@@ -3,6 +3,7 @@
     {
       "ami_groups": "{{user `AmiGroups`}}",
       "ami_name": "{{user `ImageName`}}",
+      "encrypt_boot": "false",
       "force_delete_snapshot": "true",
       "instance_type": "{{user `InstanceType`}}",
       "launch_block_device_mappings": [
@@ -51,7 +52,7 @@
     "Department": "Platform",
     "ImageName": "{{env `ImageName`}}",
     "InstanceType": "t3.small",
-    "OwnerEmail": "thomas.yu@sagebase.org",
+    "OwnerEmail": "it@sagebase.org",
     "Project": "Infrastructure",
     "SnapshotGroups": "all",
     "SourceImage": "ami-0b7906ab614596e7e",
