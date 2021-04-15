@@ -33,17 +33,12 @@
       ansible.builtin.git:
         repo: 'https://github.com/grisha/mod_python.git'
         # latest commit of the master branch that I've verified compilable as of the writing of this script
-        version: 88e444429ec2acd66eb51fa198b8dd6e1ef6a256
+        version: 83e9b96d72833d792795104362504e27c0fe0bf8
         dest: /tmp/mod_python_source
 
     - name: Compile and install mod_python
       shell:
-        # we first need to fix the configure script. see:
-        # https://github.com/grisha/mod_python/issues/81
-        # https://github.com/grisha/mod_python/pull/86
         cmd: |
-          sed -i 's/print(distutils.sysconfig.get_config_var("LDLIBRARY"))/print(distutils.sysconfig.get_config_var("BLDLIBRARY"))/' ./configure
-
           ./configure
 
           make install
