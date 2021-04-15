@@ -79,7 +79,7 @@
         dest: /etc/apache2/sites-available/proxy.conf
 
     - name: Enable modules
-      command: a2enmod ssl proxy proxy_http rewrite python headers
+      command: a2enmod ssl proxy proxy_http proxy_wstunnel rewrite python headers
 
     - name: Enable proxy site
       command: a2ensite proxy
