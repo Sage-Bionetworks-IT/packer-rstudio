@@ -85,7 +85,7 @@
     # Install essential R packages
     - name: Install synapser
       # environment variable needed to communicate with the embedded python and install boto3 dependency
-      shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://staging-ran.synapse.org', 'http://cran.fhcrc.org'))\""
+      shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))\""
 
     - name: Install tidyverse
       shell: "R -e \"install.packages('tidyverse')\""
