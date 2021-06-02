@@ -98,7 +98,7 @@
 
     - name: update limits.conf
       shell:
-        cmd:
+        cmd: |
           # The ">>" commands won't work unless we make this permission change
           sudo chmod 666 /etc/security/limits.conf
           echo '* soft nofile 1000000' >> /etc/security/limits.conf
