@@ -96,6 +96,11 @@
     - name: Install BiocManager
       shell: "R -e \"install.packages('BiocManager')\""
 
+    - name: Create directory for the following step
+      file:
+        path: /etc/systemd/system.conf.d
+        state: directory
+
     - name: Update file access limits for all processes
       copy:
         dest: /etc/systemd/system.conf.d/60-DefaultLimitNOFILE.conf
