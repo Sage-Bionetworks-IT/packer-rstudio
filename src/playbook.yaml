@@ -95,12 +95,10 @@
 
     - name: Install BiocManager
       shell: "R -e \"install.packages('BiocManager')\""
-
-    - name: update limits.conf
-      shell:
-        cmd: |
-          # The ">>" commands won't work unless we make this permission change
-          sudo chmod 666 /etc/security/limits.conf
-          echo '* soft nofile 1000000' >> /etc/security/limits.conf
-          echo '* hard nofile 1000000' >> /etc/security/limits.conf
-          sudo chmod 644 /etc/security/limits.conf
+      
+    - name: Update file access limits for all processes
+      copy: 
+        dest: /etc/systemd/system.conf.d/60-DefaultLimitNOFILE.conf
+        content: |
+          [Manager]
+          DefaultLimitNOFILE=1000000
