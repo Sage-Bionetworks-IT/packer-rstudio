@@ -2,29 +2,26 @@
   become: yes
 
   tasks:
-    # - name: Get base playbook
-    #   get_url: url=https://raw.githubusercontent.com/Sage-Bionetworks/packer-base-ubuntu-bionic/v1.0.0/src/playbook.yaml dest={{ playbook_dir }}/sagebio-base-ubuntu-bionic-v1.0.0.yaml
-
-    # - include_tasks: sagebio-base-ubuntu-bionic-v1.0.0.yaml
-
     - name: Add the CRAN apt key
       apt_key:
         keyserver: keyserver.ubuntu.com
         id: E298A3A825C0D65DFD57CBB651716619E084DAB9
 
     - name: Add R-Project apt repository
-      shell: "aptdcon --add-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu {{ ansible_distribution_release }}-cran35/' && aptdcon --refresh"
+      # The reference to CRAN is specified here: https://cloud.r-project.org/bin/linux/ubuntu/
+      shell: "aptdcon --add-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu {{ ansible_distribution_release }}-cran40/' && aptdcon --refresh"
 
     - name: install packages
       shell: "yes | aptdcon --hide-terminal --install 'zlib1g-dev libclang-dev libssl-dev libffi-dev libcurl4-openssl-dev libapparmor1 libssl1.0.0 r-base r-base-dev libxml2-dev apache2 apache2-dev ssl-cert flex python3-boto3'"
 
     - name: Download RStudio Server
-      get_url: url=https://download2.rstudio.org/server/bionic/amd64/rstudio-server-1.2.5033-amd64.deb dest=/tmp/rstudio.deb
+      # The URL used below comes from here: https://www.rstudio.com/products/rstudio/download-server/debian-ubuntu/
+      get_url: url=https://download2.rstudio.org/server/bionic/amd64/rstudio-server-2022.02.0-443-amd64.deb dest=/tmp/rstudio.deb
 
     - name: Install RStudio Server
       command: dpkg -i /tmp/rstudio.deb
 
-    # Compile mod_python from source becuase we want to run mod_python in a Python 3 environment.
+    # Compile mod_python from source because we want to run mod_python in a Python 3 environment.
     # We need mod_python >= 3.5
     # Unfortunately, the mod_python provided by apt in Ubuntu 18.04
     # is an older version (mod_pthon 3.3) that only supports Python 2
