@@ -18,6 +18,9 @@ install:
   - sudo ./aws/install
   # install other tools
   - pip install pre-commit travis-wait-improved ansible
+  - packer --version
+  - ansible --version
+  - aws --version
 before_script:
   - mkdir -p ~/.aws
   - echo -e "[default]\nregion=us-east-1\nsource_profile=default\nrole_arn=$AwsCfServiceRoleArn" > ~/.aws/config
