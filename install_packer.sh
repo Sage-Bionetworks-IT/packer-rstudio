@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 workdir=/tmp/packer
-pversion=1.4.3
+pversion=1.4.4
 
 which packer || {
   mkdir -p $workdir
