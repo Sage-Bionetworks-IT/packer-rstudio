@@ -40,7 +40,7 @@ jobs:
         - echo "AwsProfile = ${AWS_PROFILE}"
         - echo "AwsRegion = ${AWS_REGION}"
         - packer validate -var ImageName=${IMAGE_NAME} template.json
-        - packer build -force -var AwsProfile=${AWS_PROFILE} -var AwsRegion=${AWS_REGION} -var ImageName=${IMAGE_NAME} template.json
+        - packer build -force -var AwsProfile=default -var AwsRegion=us-east-1 -var ImageName=${IMAGE_NAME} template.json
     - stage: deploy-branch
       script:
         - pushd src
