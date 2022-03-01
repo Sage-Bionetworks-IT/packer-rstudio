@@ -1,19 +1,27 @@
-dist: bionic
 language: python
-python: 3.7
+python: 3.8
 cache: pip
+env:
+  global:
+    - REPO_NAME="${PWD##*/}"
+    - IMAGE_NAME="${REPO_NAME}-${TRAVIS_BRANCH}"
+    - AWS_PROFILE="default"
+    - AWS_REGION="us-east-1"
 install:
-  - wget https://github.com/Sage-Bionetworks/infra-utils/archive/master.zip -O /tmp/infra-utils.zip
-  - unzip -j -n /tmp/infra-utils.zip -x "infra-utils-master/.gitignore" "infra-utils-master/LICENSE" "infra-utils-master/*.md" "infra-utils-master/aws/*"
-  - ./setup_aws_cli.sh || travis_terminate 1
-  - ./install_packer.sh || travis_terminate 1
+  # install packer
+  - curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+  - sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+  - sudo apt-get update && sudo apt-get install packer
+  # install awscli v2
+  - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  - unzip awscliv2.zip
+  - sudo ./aws/install
+  # install other tools
   - pip install pre-commit travis-wait-improved ansible
 before_script:
-  - path=$(pwd)
-  - export REPO_NAME="${path##*/}"
-  - export IMAGE_NAME="${REPO_NAME}-${TRAVIS_BRANCH}"
-  - export AWS_PROFILE="default"
-  - export AWS_REGION="us-east-1"
+  - mkdir -p ~/.aws
+  - echo -e "[default]\nregion=us-east-1\nsource_profile=default\nrole_arn=$AwsCfServiceRoleArn" > ~/.aws/config
+  - echo -e "[default]\nregion=us-east-1\naws_access_key_id=$AwsTravisAccessKey\naws_secret_access_key=$AwsTravisSecretAccessKey" > ~/.aws/credentials
 stages:
   - name: validate
   - name: deploy-branch
