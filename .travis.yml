@@ -34,7 +34,11 @@ jobs:
       script:
         - pre-commit run --all-files
         - pushd src
+        - echo "RepoName = ${REPO_NAME}"
         - echo "ImageName = ${IMAGE_NAME}"
+        - echo "TravisBranch = ${TRAVIS_BRANCH}"
+        - echo "AwsProfile = ${AWS_PROFILE}"
+        - echo "AwsRegion = ${AWS_REGION}"
         - packer validate -var ImageName=${IMAGE_NAME} template.json
     - stage: deploy-branch
       script:
