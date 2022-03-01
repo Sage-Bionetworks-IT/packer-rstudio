@@ -27,15 +27,20 @@ stages:
   - name: deploy-branch
     if: type = push AND branch = master
   - name: deploy-tag
-    if: tag =~ ^v
+    if: tag =~ ^v[0-9]+\.[0-9]+\.[0-9]+)
 jobs:
   include:
     - stage: validate
       script:
         - pre-commit run --all-files
         - pushd src
+        - echo "RepoName = ${REPO_NAME}"
         - echo "ImageName = ${IMAGE_NAME}"
+        - echo "TravisBranch = ${TRAVIS_BRANCH}"
+        - echo "AwsProfile = ${AWS_PROFILE}"
+        - echo "AwsRegion = ${AWS_REGION}"
         - packer validate -var ImageName=${IMAGE_NAME} template.json
+        - packer build -force -var AwsProfile=${AWS_PROFILE} -var AwsRegion=${AWS_REGION} -var ImageName=${IMAGE_NAME} template.json
     - stage: deploy-branch
       script:
         - pushd src
