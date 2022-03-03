@@ -5,7 +5,7 @@ env:
   global:
     - REPO_NAME="${PWD##*/}"
     - IMAGE_NAME="${REPO_NAME}-${TRAVIS_BRANCH}"
-    - AWS_PROFILE="librarian-role"
+    - AWS_PROFILE="ci-role"
     - AWS_REGION="us-east-1"
 install:
   # install packer
@@ -19,8 +19,8 @@ install:
   - pip install pre-commit travis-wait-improved ansible
 before_script:
   - mkdir -p ~/.aws
-  - echo -e "[librarian-role]\nregion=us-east-1\nsource_profile=librarian\nrole_arn=$AwsCfServiceRoleArn" > ~/.aws/config
-  - echo -e "[librarian]\nregion=us-east-1\naws_access_key_id=$AwsTravisAccessKey\naws_secret_access_key=$AwsTravisSecretAccessKey" > ~/.aws/credentials
+  - echo -e "[ci-role]\nregion=us-east-1\nsource_profile=ci-user\nrole_arn=$AwsCfServiceRoleArn" > ~/.aws/config
+  - echo -e "[ci-uer]\nregion=us-east-1\naws_access_key_id=$AwsTravisAccessKey\naws_secret_access_key=$AwsTravisSecretAccessKey" > ~/.aws/credentials
 stages:
   - name: validate
   - name: deploy-branch
