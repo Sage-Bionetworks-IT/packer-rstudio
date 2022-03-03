@@ -5,7 +5,7 @@ env:
   global:
     - REPO_NAME="${PWD##*/}"
     - IMAGE_NAME="${REPO_NAME}-${TRAVIS_BRANCH}"
-    - AWS_PROFILE="default"
+    - AWS_PROFILE="librarian-role"
     - AWS_REGION="us-east-1"
 install:
   # install packer
@@ -14,14 +14,13 @@ install:
   - sudo apt-get update && sudo apt-get install packer
   # install awscli v2
   - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-  - unzip awscliv2.zip
-  - sudo ./aws/install
+  - unzip awscliv2.zip && sudo ./aws/install
   # install other tools
   - pip install pre-commit travis-wait-improved ansible
 before_script:
   - mkdir -p ~/.aws
-  - echo -e "[default]\nregion=us-east-1\nsource_profile=default\nrole_arn=$AwsCfServiceRoleArn" > ~/.aws/config
-  - echo -e "[default]\nregion=us-east-1\naws_access_key_id=$AwsTravisAccessKey\naws_secret_access_key=$AwsTravisSecretAccessKey" > ~/.aws/credentials
+  - echo -e "[librarian-role]\nregion=us-east-1\nsource_profile=librarian\nrole_arn=$AwsCfServiceRoleArn" > ~/.aws/config
+  - echo -e "[librarian]\nregion=us-east-1\naws_access_key_id=$AwsTravisAccessKey\naws_secret_access_key=$AwsTravisSecretAccessKey" > ~/.aws/credentials
 stages:
   - name: validate
   - name: deploy-branch
@@ -34,16 +33,11 @@ jobs:
       script:
         - pre-commit run --all-files
         - pushd src
-        - echo "RepoName = ${REPO_NAME}"
-        - echo "ImageName = ${IMAGE_NAME}"
-        - echo "TravisBranch = ${TRAVIS_BRANCH}"
-        - echo "AwsProfile = ${AWS_PROFILE}"
-        - echo "AwsRegion = ${AWS_REGION}"
         - packer validate -var ImageName=${IMAGE_NAME} template.json
     - stage: deploy-branch
       script:
         - pushd src
-        - travis-wait-improved --timeout 45m packer build -force -var AwsProfile=default -var AwsRegion=us-east-1 -var ImageName=${IMAGE_NAME} template.json
+        - travis-wait-improved --timeout 45m packer build -force -var AwsProfile=${AWS_PROFILE} -var AwsRegion=${AWS_REGION} -var ImageName=${IMAGE_NAME} template.json
     - stage: deploy-tag
       script:
         - pushd src
