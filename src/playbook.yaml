@@ -12,7 +12,7 @@
       shell: "aptdcon --add-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu {{ ansible_distribution_release }}-cran40/' && aptdcon --refresh"
 
     - name: install packages
-      shell: "yes | aptdcon --hide-terminal --install 'zlib1g-dev libclang-dev libssl-dev libffi-dev libcurl4-openssl-dev libapparmor1 libssl1.0.0 r-base r-base-dev libxml2-dev apache2 apache2-dev ssl-cert flex python3-boto3'"
+      shell: "yes | aptdcon --hide-terminal --install 'zlib1g-dev libclang-dev libssl-dev libffi-dev libcurl4-openssl-dev libapparmor1 libssl1.0.0 r-base r-base-dev libxml2-dev apache2 apache2-dev ssl-cert flex python3-boto3 libpq5'"
 
     - name: Download RStudio Server
       # The URL used below comes from here: https://www.rstudio.com/products/rstudio/download-server/debian-ubuntu/
