@@ -19,7 +19,7 @@
     - name: Install RStudio Server
       command: dpkg -i /tmp/rstudio.deb
 
-    # Compile mod_python from source becuase we want to run mod_python in a Python 3 environment.
+    # Compile mod_python from source because we want to run mod_python in a Python 3 environment.
     # We need mod_python >= 3.5
     # Unfortunately, the mod_python provided by apt in Ubuntu 18.04
     # is an older version (mod_pthon 3.3) that only supports Python 2
