@@ -1,0 +1,9 @@
+# Ansible requirements
+roles:
+#  - name: "wtanaka.libssl_devel"
+#  - name: "oefenweb.r"
+#  - name: "oefenweb.rstudio"
+#  - name: "oefenweb.rstudio_server"
+#  - name: "trallnag.awscli"
+#  - name: "geerlingguy.docker"
+   - name: "andrewrothstein.rstudio-server"
