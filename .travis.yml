@@ -33,12 +33,12 @@ jobs:
       script:
         - pre-commit run --all-files
         - pushd src
-        - packer validate -var ImageName=${IMAGE_NAME} template.json
+        - packer validate -var AmiImageName=${IMAGE_NAME} template.json
     - stage: deploy-branch
       script:
         - pushd src
-        - travis-wait-improved --timeout 90m packer build -force -var AwsProfile=${AWS_PROFILE} -var AwsRegion=${AWS_REGION} -var ImageName=${IMAGE_NAME} template.json
+        - travis-wait-improved --timeout 90m AWS_PROFILE=${AWS_PROFILE} AWS_DEFAULT_REGION=${AWS_REGION} packer build -force -var AmiImageName=${IMAGE_NAME} template.json
     - stage: deploy-tag
       script:
         - pushd src
-        - travis-wait-improved --timeout 90m packer build -force -var AwsProfile=${AWS_PROFILE} -var AwsRegion=${AWS_REGION} -var ImageName=${IMAGE_NAME} template.json
+        - travis-wait-improved --timeout 90m AWS_PROFILE=${AWS_PROFILE} AWS_DEFAULT_REGION=${AWS_REGION} packer build -force -var AmiImageName=${IMAGE_NAME} template.json
