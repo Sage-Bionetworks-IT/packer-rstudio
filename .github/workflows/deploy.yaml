@@ -1,0 +1,57 @@
+name: aws-deploy
+
+on:
+  push:
+    branches: [ '*' ]
+    tags: [ 'v[0-9]+\.[0-9]+\.[0-9]+' ]
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+      - uses: pre-commit/action@v3.0.0
+      - name: Setup `packer`
+        uses: hashicorp/setup-packer@main
+        with:
+          version: latest
+      - name: packer validate
+        run: |
+          pushd src
+          packer validate -var AmiImageName=validate template.json
+  deploy:
+    name: Deploy to AWS org-sagebase-imagecentral
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v') }}
+    needs: [ "validate" ]
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      AWS_ROLE_TO_ASSUME: "arn:aws:iam::867686887310:role/sagebase-github-oidc-packer-image-deploy"
+      AWS_REGION: "us-east-1"
+      AMI_IMAGE_NAME: ${{ github.event.repository.name }}-${{ github.ref_name }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup `packer`
+      uses: hashicorp/setup-packer@main
+      with:
+        version: "latest"
+    - name: Assume AWS Role
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+        role-session-name: GitHubActions-${{ github.repository_owner }}-${{ github.event.repository.name }}-${{ github.run_id }}
+        role-duration-seconds: 3600
+    - name: Build and Upload AMI
+      run: |
+        pushd src
+        AWS_DEFAULT_REGION=${{ env.AWS_REGION }} packer build -force -var AmiImageName=${{ env.AMI_IMAGE_NAME }} template.json
