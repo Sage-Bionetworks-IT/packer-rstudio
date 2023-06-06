@@ -50,7 +50,7 @@ jobs:
         aws-region: ${{ env.AWS_REGION }}
         role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
         role-session-name: GitHubActions-${{ github.repository_owner }}-${{ github.event.repository.name }}-${{ github.run_id }}
-        role-duration-seconds: 3600
+        role-duration-seconds: 7200
     - name: Build and Upload AMI
       run: |
         pushd src
