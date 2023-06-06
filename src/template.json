@@ -24,6 +24,7 @@
       "shutdown_behavior": "terminate",
       "snapshot_groups": "{{user `SnapshotGroups`}}",
       "source_ami": "{{user `SourceImage`}}",
+      "ssh_read_write_timeout": "{{user `SshReadWriteTimeout`}}",
       "ssh_username": "{{user `SshUsername`}}",
       "tags": {
         "BuiltBy": "Packer",
@@ -52,6 +53,7 @@
         "'-O'"
       ],
       "playbook_file": "playbook.yaml",
+      "timeout": "2h",
       "type": "ansible"
     }
   ],
@@ -62,6 +64,7 @@
     "OwnerEmail": "it@sagebase.org",
     "SnapshotGroups": "all",
     "SourceImage": "ami-0c2a4da0850a4c9a5",
+    "SshReadWriteTimeout": "2h",
     "SshUsername": "ubuntu",
     "VolumeSize": "30",
     "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
