@@ -133,3 +133,7 @@ src/manifest.json
 
 #jetbrains
 .idea/
+
+
+# temp
+temp/
