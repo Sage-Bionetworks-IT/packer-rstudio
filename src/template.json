@@ -1,9 +1,13 @@
 {
   "builders": [
     {
+      "access_key": "{{user `aws_access_key`}}",
       "ami_groups": "{{user `AmiGroups`}}",
-      "ami_name": "{{user `ImageName`}}",
-      "encrypt_boot": "false",
+      "ami_name": "{{user `AmiImageName`}}",
+      "assume_role": {
+        "role_arn": "{{user `aws_role_arn`}}"
+      },
+      "encrypt_boot": "{{user `EncryptBoot`}}",
       "force_delete_snapshot": "true",
       "instance_type": "{{user `InstanceType`}}",
       "launch_block_device_mappings": [
@@ -11,23 +15,24 @@
           "delete_on_termination": true,
           "device_name": "/dev/sda1",
           "volume_size": "{{user `VolumeSize`}}",
-          "volume_type": "gp2"
+          "volume_type": "gp3"
         }
       ],
-      "profile": "{{user `AwsProfile`}}",
-      "region": "{{user `AwsRegion`}}",
+      "profile": "{{user `aws_profile`}}",
+      "region": "{{user `aws_region`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "shutdown_behavior": "terminate",
       "snapshot_groups": "{{user `SnapshotGroups`}}",
       "source_ami": "{{user `SourceImage`}}",
       "ssh_username": "{{user `SshUsername`}}",
       "tags": {
         "BuiltBy": "Packer",
-        "Department": "{{user `Department`}}",
-        "Name": "{{user `ImageName`}}",
+        "Name": "{{user `AmiImageName`}}",
         "OwnerEmail": "{{user `OwnerEmail`}}",
-        "Project": "{{user `Project`}}",
         "SourceAmiId": "{{ .SourceAMI }}",
         "SourceAmiName": "{{ .SourceAMIName }}"
       },
+      "token": "{{user `aws_session_token`}}",
       "type": "amazon-ebs"
     }
   ],
@@ -40,8 +45,11 @@
   ],
   "provisioners": [
     {
-      "ansible_env_vars": [
-        "ANSIBLE_SSH_ARGS='-o IdentitiesOnly=yes'"
+      "extra_arguments": [
+        "--ssh-extra-args",
+        "-o IdentitiesOnly=yes -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa",
+        "--scp-extra-args",
+        "'-O'"
       ],
       "playbook_file": "playbook.yaml",
       "type": "ansible"
@@ -49,14 +57,18 @@
   ],
   "variables": {
     "AmiGroups": "all",
-    "Department": "Platform",
-    "ImageName": "{{env `ImageName`}}",
-    "InstanceType": "t3.small",
+    "EncryptBoot": "false",
+    "InstanceType": "t3.nano",
     "OwnerEmail": "it@sagebase.org",
-    "Project": "Infrastructure",
     "SnapshotGroups": "all",
-    "SourceImage": "ami-0b7906ab614596e7e",
+    "SourceImage": "ami-0c2a4da0850a4c9a5",
     "SshUsername": "ubuntu",
-    "VolumeSize": "16"
+    "VolumeSize": "16",
+    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_profile": "{{env `AWS_PROFILE`}}",
+    "aws_region": "{{env `AWS_DEFAULT_REGION`}}",
+    "aws_role_arn": "{{env `AWS_ROLE_ARN`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "aws_session_token": "{{env `AWS_SESSION_TOKEN`}}"
   }
 }
