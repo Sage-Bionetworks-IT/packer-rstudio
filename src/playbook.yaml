@@ -73,21 +73,21 @@
         id: E298A3A825C0D65DFD57CBB651716619E084DAB9
 
     - name: Add R-Project apt repository
-      command: "aptdcon --add-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu {{ ansible_distribution_release }}-cran40/' && aptdcon --refresh"
+      shell: "aptdcon --add-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu {{ ansible_distribution_release }}-cran40/' && aptdcon --refresh"
 
     # Install essential R packages
     - name: Install synapser
       # environment variable needed to communicate with the embedded python and install boto3 dependency
-      command: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2)\""
+      shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2)\""
 
     - name: Install tidyverse
-      command: "R -e \"install.packages('tidyverse', Ncpus = 2)\""
+      shell: "R -e \"install.packages('tidyverse', Ncpus = 2)\""
 
     - name: Install devtools
-      command: "R -e \"install.packages('devtools'), Ncpus = 2\""
+      shell: "R -e \"install.packages('devtools'), Ncpus = 2\""
 
     - name: Install BiocManager
-      command: "R -e \"install.packages('BiocManager', Ncpus = 2)\""
+      shell: "R -e \"install.packages('BiocManager', Ncpus = 2)\""
 
     - name: Create directory for the following step
       file:
