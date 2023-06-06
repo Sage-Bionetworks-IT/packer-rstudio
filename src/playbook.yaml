@@ -84,7 +84,7 @@
       shell: "R -e \"install.packages('tidyverse', Ncpus = 2)\""
 
     - name: Install devtools
-      shell: "R -e \"install.packages('devtools'), Ncpus = 2\""
+      shell: "R -e \"install.packages('devtools', Ncpus = 2)\""
 
     - name: Install BiocManager
       shell: "R -e \"install.packages('BiocManager', Ncpus = 2)\""
