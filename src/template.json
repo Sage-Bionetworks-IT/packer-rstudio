@@ -63,7 +63,7 @@
     "InstanceType": "t3.small",
     "OwnerEmail": "it@sagebase.org",
     "SnapshotGroups": "all",
-    "SourceImage": "ami-0c2a4da0850a4c9a5",
+    "SourceImage": "ami-0b710e028cd5ff838",
     "SshReadWriteTimeout": "2h",
     "SshUsername": "ubuntu",
     "VolumeSize": "30",
