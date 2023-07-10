@@ -5,9 +5,10 @@ Wants=network-online.target
 
 [Service]
 Type=forking
+Environment="USER=ubuntu"
 PIDFile=/var/run/rstudio-server.pid
 User=ubuntu
-ExecStart=/usr/lib/rstudio-server/bin/rserver --auth-none 1
+ExecStart=/usr/lib/rstudio-server/bin/rserver
 ExecStop=/usr/bin/killall -TERM rserver
 KillMode=none
 Restart=on-failure
