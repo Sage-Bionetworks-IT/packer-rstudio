@@ -103,8 +103,7 @@
       copy:
         dest: /etc/rstudio/rserver.conf
         content: |
-          www-address=127.0.0.1  #Only serve on internal interface
-          www-port=8787
+          auth-none=1
 
     - name: Replace rstudio-server service with no auth
       copy:
