@@ -113,7 +113,7 @@
           DefaultLimitNOFILE=1000000
 
     - name: Download RStudio Server
-      get_url: url=https://download2.rstudio.org/server/jammy/amd64/rstudio-server-2023.03.1-446-amd64.deb dest=/tmp/rstudio.deb
+      get_url: url=https://download2.rstudio.org/server/bionic/amd64/rstudio-server-2022.02.0-443-amd64.deb dest=/tmp/rstudio.deb
 
     - name: Install RStudio Server
       command: dpkg -i /tmp/rstudio.deb
