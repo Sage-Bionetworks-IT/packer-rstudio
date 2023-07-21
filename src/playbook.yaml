@@ -44,10 +44,6 @@
           - p7zip-full
           - patchelf
           - pkg-config
-          - python3
-          - python3-venv
-          - r-base-dev
-          - r-base
           - rrdtool
           - software-properties-common
           - unzip
@@ -65,18 +61,37 @@
           - libcurl4-openssl-dev
           - libapparmor1
           - libxml2-dev
-          - python3-boto3
+          - ibharfbuzz-dev
+          - libfribidi-dev
+          - libfreetype6-dev
+          - libpng-dev
+          - libtiff5-dev
+          - libjpeg-dev
+          - software-properties-common
+
+    - name: Setup python 3.8
+      shell: |
+        add-apt-repository ppa:deadsnakes/ppa
+        apt install -y python3.8
+        update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
+        update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 2
+#       python3-boto3 python3-venv
+
+    - name: Setup apt repo for R 4.3
+      shell: |
+        wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+        add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40"
+        apt install --no-install-recommends r-base r-base-dev
 
     # Install essential R packages
-    - name: Install synapser
-      # environment variable needed to communicate with the embedded python and install boto3 dependency
-      shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2)\""
-
-    - name: Install tidyverse
-      shell: "R -e \"install.packages('tidyverse', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
+    - name: Install Rcpp
+      shell: "R -e \"install.packages('Rcpp', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
 
     - name: Install devtools
       shell: "R -e \"install.packages('devtools', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
+
+    - name: Install tidyverse
+      shell: "R -e \"install.packages('tidyverse', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
 
     - name: Install BiocManager
       shell: "R -e \"install.packages('BiocManager', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
@@ -85,6 +100,10 @@
       file:
         path: /etc/systemd/system.conf.d
         state: directory
+
+    # - name: Install synapser
+    #   # environment variable needed to communicate with the embedded python and install boto3 dependency
+    #   shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2)\""
 
     - name: Update file access limits for all processes
       copy:
@@ -103,7 +122,8 @@
       copy:
         dest: /etc/rstudio/rserver.conf
         content: |
-          auth-none=1
+          www-address=127.0.0.1  #Only serve on internal interface
+          www-port=8787
 
     - name: Replace rstudio-server service with no auth
       copy:
