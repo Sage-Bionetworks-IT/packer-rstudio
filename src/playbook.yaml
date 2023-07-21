@@ -85,16 +85,16 @@
 
     # Install essential R packages
     - name: Install Rcpp
-      shell: "R -e \"install.packages('Rcpp', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
+      shell: "R -e \"install.packages('Rcpp', repos=c('https://packagemanager.posit.co/cran/__linux__/bionic/latest'))\""
 
     - name: Install devtools
-      shell: "R -e \"install.packages('devtools', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
+      shell: "R -e \"install.packages('devtools', repos=c('https://packagemanager.posit.co/cran/__linux__/bionic/latest'))\""
 
     - name: Install tidyverse
-      shell: "R -e \"install.packages('tidyverse', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
+      shell: "R -e \"install.packages('tidyverse', repos=c('https://packagemanager.posit.co/cran/__linux__/bionic/latest'))\""
 
     - name: Install BiocManager
-      shell: "R -e \"install.packages('BiocManager', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
+      shell: "R -e \"install.packages('BiocManager', repos=c('https://packagemanager.posit.co/cran/__linux__/bionic/latest'))\""
 
     - name: Create directory for the following step
       file:
