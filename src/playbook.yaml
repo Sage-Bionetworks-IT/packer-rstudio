@@ -68,14 +68,17 @@
           - libtiff5-dev
           - libjpeg-dev
           - software-properties-common
+          - dirmngr
           - python3
           - python3-venv
           - python3-boto3
 
+    # From https://cloud.r-project.org/bin/linux/ubuntu/
     - name: Setup apt repo for R 4.3
       shell: |
         wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
-        add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40"
+        add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
+        add-apt-repository ppa:c2d4u.team/c2d4u4.0+
         apt install --no-install-recommends r-base r-base-dev
 
     # Install essential R packages
