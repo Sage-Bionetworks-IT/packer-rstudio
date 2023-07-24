@@ -44,10 +44,6 @@
           - p7zip-full
           - patchelf
           - pkg-config
-          - python3
-          - python3-venv
-          - r-base-dev
-          - r-base
           - rrdtool
           - software-properties-common
           - unzip
@@ -65,9 +61,25 @@
           - libcurl4-openssl-dev
           - libapparmor1
           - libxml2-dev
+          - ibharfbuzz-dev
+          - libfribidi-dev
+          - libfreetype6-dev
+          - libpng-dev
+          - libtiff5-dev
+          - libjpeg-dev
+          - software-properties-common
+          - python3
+          - python3-venv
           - python3-boto3
 
+    - name: Setup apt repo for R 4.3
+      shell: |
+        wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+        add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40"
+        apt install --no-install-recommends r-base r-base-dev
+
     # Install essential R packages
+
     - name: Install synapser
       # environment variable needed to communicate with the embedded python and install boto3 dependency
       shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2)\""
@@ -94,7 +106,7 @@
           DefaultLimitNOFILE=1000000
 
     - name: Download RStudio Server
-      get_url: url=https://download2.rstudio.org/server/jammy/amd64/rstudio-server-2023.03.1-446-amd64.deb dest=/tmp/rstudio.deb
+      get_url: url=https://s3.amazonaws.com/rstudio-ide-build/server/jammy/amd64/rstudio-server-2022.02.3-492-amd64.deb dest=/tmp/rstudio.deb
 
     - name: Install RStudio Server
       command: dpkg -i /tmp/rstudio.deb
@@ -103,7 +115,8 @@
       copy:
         dest: /etc/rstudio/rserver.conf
         content: |
-          auth-none=1
+          www-address=127.0.0.1  #Only serve on internal interface
+          www-port=8787
 
     - name: Replace rstudio-server service with no auth
       copy:
