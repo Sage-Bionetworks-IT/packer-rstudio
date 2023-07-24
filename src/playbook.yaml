@@ -61,7 +61,7 @@
           - libcurl4-openssl-dev
           - libapparmor1
           - libxml2-dev
-          - ibharfbuzz-dev
+          - libharfbuzz-dev
           - libfribidi-dev
           - libfreetype6-dev
           - libpng-dev
