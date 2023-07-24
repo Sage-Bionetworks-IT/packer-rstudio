@@ -79,14 +79,16 @@
         apt install --no-install-recommends r-base r-base-dev
 
     # Install essential R packages
-    - name: Install Rcpp
-      shell: "R -e \"install.packages('Rcpp', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
 
-    - name: Install devtools
-      shell: "R -e \"install.packages('devtools', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
+    - name: Install synapser
+      # environment variable needed to communicate with the embedded python and install boto3 dependency
+      shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2)\""
 
     - name: Install tidyverse
       shell: "R -e \"install.packages('tidyverse', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
+
+    - name: Install devtools
+      shell: "R -e \"install.packages('devtools', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
 
     - name: Install BiocManager
       shell: "R -e \"install.packages('BiocManager', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
@@ -95,10 +97,6 @@
       file:
         path: /etc/systemd/system.conf.d
         state: directory
-
-    # - name: Install synapser
-    #   # environment variable needed to communicate with the embedded python and install boto3 dependency
-    #   shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2)\""
 
     - name: Update file access limits for all processes
       copy:
