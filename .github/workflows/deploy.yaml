@@ -24,7 +24,7 @@ jobs:
       - name: packer validate
         run: |
           pushd src
-          packer validate -var AmiImageName=validate template.json
+          packer validate -var ImageName=validate template.json
   deploy:
     name: Deploy to AWS org-sagebase-imagecentral
     runs-on: ubuntu-latest
