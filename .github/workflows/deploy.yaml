@@ -54,4 +54,4 @@ jobs:
     - name: Build and Upload AMI
       run: |
         pushd src
-        AWS_DEFAULT_REGION=${{ env.AWS_REGION }} packer build -force -var AmiImageName=${{ env.AMI_IMAGE_NAME }} template.json
+        AWS_DEFAULT_REGION=${{ env.AWS_REGION }} packer build -force -var ImageName=${{ env.AMI_IMAGE_NAME }} template.json
