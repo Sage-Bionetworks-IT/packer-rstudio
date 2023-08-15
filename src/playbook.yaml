@@ -47,7 +47,7 @@
           echo 'LoadModule python_module /usr/lib/apache2/modules/mod_python.so' >> /etc/apache2/mods-available/python.load
         chdir: /tmp/mod_python_source
 
-    - name: Install python3.8 (highest we can get on U18.04)
+    - name: Install python3.8
       cmd: |
         add-apt-repository -y ppa:deadsnakes/ppa
         apt update
