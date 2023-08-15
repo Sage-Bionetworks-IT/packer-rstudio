@@ -48,13 +48,14 @@
         chdir: /tmp/mod_python_source
 
     - name: Install python3.8
-      cmd: |
-        add-apt-repository -y ppa:deadsnakes/ppa
-        apt update
-        apt install -y python3.8
-        update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
-        update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 2
-        update-alternatives --set python3 /usr/bin/python3.8
+      shell:
+        cmd: |
+          add-apt-repository -y ppa:deadsnakes/ppa
+          apt update
+          apt install -y python3.8
+          update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
+          update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 2
+          update-alternatives --set python3 /usr/bin/python3.8
 
     - name: Overwrite rstudio web config
       copy:
