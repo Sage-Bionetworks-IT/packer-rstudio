@@ -40,10 +40,14 @@
   ],
   "provisioners": [
     {
-      "ansible_env_vars": [
-        "ANSIBLE_SSH_ARGS='-o IdentitiesOnly=yes'"
+      "extra_arguments": [
+        "--ssh-extra-args",
+        "-o IdentitiesOnly=yes -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa",
+        "--scp-extra-args",
+        "'-O'"
       ],
       "playbook_file": "playbook.yaml",
+      "timeout": "1h",
       "type": "ansible"
     }
   ],
