@@ -16,7 +16,7 @@
       shell: "aptdcon --add-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu {{ ansible_distribution_release }}-cran40/' && aptdcon --refresh"
 
     - name: install packages
-      shell: "yes | aptdcon --hide-terminal --install 'zlib1g-dev libclang-dev libssl-dev libffi-dev libcurl4-openssl-dev libapparmor1 libssl1.0.0 r-base r-base-dev libxml2-dev apache2 apache2-dev ssl-cert flex python3-boto3 libpq5'"
+      shell: "yes | aptdcon --hide-terminal --install 'zlib1g-dev libclang-dev libssl-dev libffi-dev libcurl4-openssl-dev libapparmor1 libssl1.0.0 r-base r-base-dev libxml2-dev apache2 apache2-dev ssl-cert flex python3-boto3 libpq5 libfontconfig1-dev libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev'"
 
     - name: Download RStudio Server
       get_url: url=https://download2.rstudio.org/server/bionic/amd64/rstudio-server-1.2.5033-amd64.deb dest=/tmp/rstudio.deb
@@ -82,6 +82,9 @@
       command: a2dissite 000-default
 
     # Install essential R packages
+    - name: Install rjson from source
+      shell: "R -e \"packageurl='https://cran.r-project.org/src/contrib/Archive/rjson/rjson_0.2.20.tar.gz'; install.packages(packageurl, repos=NULL, type='source')\""
+
     - name: Install synapser
       # environment variable needed to communicate with the embedded python and install boto3 dependency
       shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'))\""
