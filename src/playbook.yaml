@@ -73,6 +73,10 @@
           - python3-venv
           - python3-boto3
 
+    # Install python synapse client
+    - name: Install Python Synapse client
+      command: pip3 install synapseclient
+
     # Install R (see https://docs.posit.co/resources/install-r/)
     - name: Install R 4.3.1
       shell: |
