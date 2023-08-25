@@ -103,19 +103,29 @@
         ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
         ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
+    - name: Create directory for user R packages
+      become_user: ubuntu
+      file:
+        path: /home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3
+        state: directory
+
     # Install essential R packages
     - name: Install synapser
+      become_user: ubuntu
       # environment variable needed to communicate with the embedded python and install boto3 dependency
-      shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2)\""
+      shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2, lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
 
     - name: Install tidyverse
-      shell: "R -e \"install.packages('tidyverse', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
+      become_user: ubuntu
+      shell: "R -e \"install.packages('tidyverse', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
 
     - name: Install devtools
-      shell: "R -e \"install.packages('devtools', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
+      become_user: ubuntu
+      shell: "R -e \"install.packages('devtools', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
 
     - name: Install BiocManager
-      shell: "R -e \"install.packages('BiocManager', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
+      become_user: ubuntu
+      shell: "R -e \"install.packages('BiocManager', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
 
     - name: Create directory for the following step
       file:
