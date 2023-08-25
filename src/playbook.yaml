@@ -110,12 +110,15 @@
       shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2)\""
 
     - name: Install tidyverse
+      become_user: ubuntu
       shell: "R -e \"install.packages('tidyverse', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
 
     - name: Install devtools
+      become_user: ubuntu
       shell: "R -e \"install.packages('devtools', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
 
     - name: Install BiocManager
+      become_user: ubuntu
       shell: "R -e \"install.packages('BiocManager', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
 
     - name: Create directory for the following step
