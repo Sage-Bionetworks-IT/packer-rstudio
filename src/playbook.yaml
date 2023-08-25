@@ -94,10 +94,6 @@
           echo 'LoadModule python_module /usr/lib/apache2/modules/mod_python.so' >> /etc/apache2/mods-available/python.load
         chdir: /tmp/mod_python_source
 
-    # Install python synapse client
-    - name: Install Python Synapse client
-      command: pip3 install synapseclient
-
     # Install R (see https://docs.posit.co/resources/install-r/)
     - name: Install R 4.3.1
       shell: |
@@ -109,16 +105,20 @@
 
     # Install essential R packages
     - name: Install synapser
+      become_user: ubuntu
       # environment variable needed to communicate with the embedded python and install boto3 dependency
       shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2)\""
 
     - name: Install tidyverse
+      become_user: ubuntu
       shell: "R -e \"install.packages('tidyverse', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
 
     - name: Install devtools
+      become_user: ubuntu
       shell: "R -e \"install.packages('devtools', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
 
     - name: Install BiocManager
+      become_user: ubuntu
       shell: "R -e \"install.packages('BiocManager', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
 
     - name: Create directory for the following step
