@@ -105,21 +105,17 @@
 
     # Install essential R packages
     - name: Install synapser
-      become_user: ubuntu
       # environment variable needed to communicate with the embedded python and install boto3 dependency
-      shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2, lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
+      shell: "R -e \"Sys.setenv(SYNAPSE_PYTHON_CLIENT_EXTRAS='boto3'); install.packages('synapser', repos=c('http://ran.synapse.org', 'http://cran.fhcrc.org'), Ncpus = 2)\""
 
     - name: Install tidyverse
-      become_user: ubuntu
-      shell: "R -e \"install.packages('tidyverse', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
+      shell: "R -e \"install.packages('tidyverse', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
 
     - name: Install devtools
-      become_user: ubuntu
-      shell: "R -e \"install.packages('devtools', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
+      shell: "R -e \"install.packages('devtools', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
 
     - name: Install BiocManager
-      become_user: ubuntu
-      shell: "R -e \"install.packages('BiocManager', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
+      shell: "R -e \"install.packages('BiocManager', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
 
     - name: Create directory for the following step
       file:
