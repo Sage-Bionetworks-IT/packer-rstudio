@@ -103,6 +103,12 @@
         ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
         ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
+    - name: Create directory for user R packages
+      become_user: ubuntu
+      file:
+        path: /home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3
+        state: directory
+
     # Install essential R packages
     - name: Install synapser
       become_user: ubuntu
