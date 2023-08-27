@@ -127,7 +127,7 @@
       become_user: ubuntu
       shell: "R -e \"install.packages('BiocManager', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
 
-    - name: Install BiocManager
+    - name: Install arrow
       become_user: ubuntu
       shell: "R -e \"install.packages('arrow', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
 
