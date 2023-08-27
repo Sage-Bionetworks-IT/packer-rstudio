@@ -16,16 +16,13 @@ ssm_parameter_name_env_var = 'SYNAPSE_TOKEN_AWS_SSM_PARAMETER_NAME'
 kms_alias_env_var = 'KMS_KEY_ALIAS'
 
 def headerparserhandler(req):
-  req.log_error("Entering handler")
   jwt_str = req.headers_in['x-amzn-oidc-data'] #proxy.conf ensures this header exists
 
   try:
     payload = jwt_payload(jwt_str)
-    req.log_error("Got JWT payload")
 
     if payload['userid'] == approved_user() and payload['exp'] > time.time():
       store_to_ssm(req.headers_in['x-amzn-oidc-accesstoken'])
-      req.log_error("Saved access token")
       return apache.OK
     else:
       return apache.HTTP_UNAUTHORIZED #the userid claim does not match the userid tag
