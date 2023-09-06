@@ -109,6 +109,15 @@
         path: /home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3
         state: directory
 
+    - name: Install devtools
+      become_user: ubuntu
+      shell: "R -e \"install.packages('devtools', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
+
+    # Install reticulate first
+    - name: Install reticulate 1.28
+      become_user: ubuntu
+      shell: "R -e \"devtools::install_version('reticulate', version='1.28', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'))\""
+
     # Install essential R packages
     - name: Install synapser
       become_user: ubuntu
@@ -119,13 +128,13 @@
       become_user: ubuntu
       shell: "R -e \"install.packages('tidyverse', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
 
-    - name: Install devtools
-      become_user: ubuntu
-      shell: "R -e \"install.packages('devtools', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
-
     - name: Install BiocManager
       become_user: ubuntu
       shell: "R -e \"install.packages('BiocManager', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
+
+    - name: Install arrow
+      become_user: ubuntu
+      shell: "R -e \"install.packages('arrow', repos=c('https://packagemanager.posit.co/cran/__linux__/jammy/latest'), lib=c('/home/ubuntu/R/x86_64-pc-linux-gnu-library/4.3/'))\""
 
     - name: Create directory for the following step
       file:
